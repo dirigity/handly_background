@@ -288,20 +288,19 @@ fn teselate(sw: f32, sh: f32, positions: impl Iterator<Item = Point<f32>>) -> Ve
     tris
 }
 
-const GRID_W: i32 = 16;
-const GRID_H: i32 = 9;
+const GRID_W: i32 = 16 * 5 / 8;
+const GRID_H: i32 = 9 * 5 / 8;
 
 const WORLD_W: i32 = 1600;
 const WORLD_H: i32 = 900;
 
 const MEAN_RADIUS: f32 = ((WORLD_W / GRID_W + WORLD_H / GRID_H) / 4) as f32;
 
-const POINTS_LEN: usize = ((GRID_W + 4) * (GRID_H + 4)) as usize;
+// const POINTS_LEN: usize = ((GRID_W + 4) * (GRID_H + 4)) as usize;
 
-const goal_fps_charged: f32 = 20.;
-const goal_fps_charging: f32 = 13.;
-const goal_fps_unplugued: f32 = 8.;
-const low_batery_warning: f64 = 0.3;
+const GOAL_FPS_CHARGED: f32 = 20.;
+const GOAL_FPS_GHARGING: f32 = 13.;
+const GOAL_FPS_UNPLUGUED: f32 = 8.;
 
 fn main() {
     let manager = battery::Manager::new().unwrap();
@@ -344,9 +343,9 @@ fn main() {
         let state = battery.state();
 
         let goal_fps = match state {
-            battery::State::Full => goal_fps_charged,
-            battery::State::Charging => goal_fps_charging,
-            _ => goal_fps_unplugued,
+            battery::State::Full => GOAL_FPS_CHARGED,
+            battery::State::Charging => GOAL_FPS_GHARGING,
+            _ => GOAL_FPS_UNPLUGUED,
         };
 
         for _ in 0..bulk_frames {
@@ -381,7 +380,7 @@ fn main() {
             //ffi::draw_tri(1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0);
 
             // raster
-            let time_factor = (ms / 10.) % 1.;
+            let time_factor = (ms / 100.) % 1.;
             let a = hsv(time_factor * 360., 0.6, 1.);
             let b = hsv(time_factor * 360., 0.9, 0.7);
             let c = (b.0 * 0.3, b.1 * 0.3, b.2 * 0.3);
